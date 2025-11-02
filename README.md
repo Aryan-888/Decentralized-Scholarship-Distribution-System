@@ -54,8 +54,8 @@ Before running this project, ensure you have:
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/your-username/scholarship-dapp.git
-   cd scholarship-dapp
+   git clone https://github.com/Aryan-888/Decentralized-Scholarship-Distribution-System.git
+   cd Decentralized-Scholarship-Distribution-System
    ```
 
 2. **Environment Configuration**
@@ -599,7 +599,7 @@ stellar contract test   # Run Soroban tests
 
 ### Getting Help
 
-- Check the [Issues](../../issues) section for known problems
+- Check the [Issues](https://github.com/Aryan-888/Decentralized-Scholarship-Distribution-System/issues) section for known problems
 - Review the [Stellar Documentation](https://developers.stellar.org/)
 - Visit [Soroban Documentation](https://soroban.stellar.org/)
 
@@ -611,7 +611,7 @@ We welcome contributions! Please follow these guidelines:
 
 1. **Fork the Repository**
    ```bash
-   git fork https://github.com/your-username/scholarship-dapp.git
+   git fork https://github.com/Aryan-888/Decentralized-Scholarship-Distribution-System.git
    ```
 
 2. **Create a Feature Branch**
@@ -664,10 +664,21 @@ When reporting issues, please include:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## � Contact & Support
+
+- **Project Maintainer**: [Aryan](https://github.com/Aryan-888)
+- **GitHub Repository**: [https://github.com/Aryan-888/Decentralized-Scholarship-Distribution-System](https://github.com/Aryan-888/Decentralized-Scholarship-Distribution-System)
+- **Issues & Bug Reports**: [GitHub Issues](https://github.com/Aryan-888/Decentralized-Scholarship-Distribution-System/issues)
+- **Documentation**: [Project Wiki](https://github.com/Aryan-888/Decentralized-Scholarship-Distribution-System/wiki) (if available)
+
+## �🙏 Acknowledgments
 
 - **Stellar Development Foundation** for the Soroban smart contract platform
 - **Firebase** for authentication and database services
 - **Next.js Team** for the excellent React framework
 - **TailwindCSS** for the utility-first CSS framework
 - **Open Source Community** for the amazing tools and libraries
+
+---
+
+**Built with ❤️ for transparent and accessible education funding**
