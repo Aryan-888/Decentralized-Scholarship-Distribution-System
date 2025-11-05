@@ -1,10 +1,16 @@
 'use client';
 
 import { useAuth } from '@/hooks/useAuth';
-import { LoginPage } from '@/components/LoginPage';
+
 import { Navbar } from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Header from '@/components/Header';
+import Hero from '@/components/Hero';
+import Features from '@/components/Features';
+import TechnologyShowcase from '@/components/TechnologyShowcase';
+import HowItWorks from '@/components/HowItWorks';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   const { user, loading, initialized } = useAuth();
@@ -30,7 +36,16 @@ export default function Home() {
   }
 
   if (!user) {
-    return <LoginPage />;
+      return (
+    <div className="min-h-screen bg-white">
+      <Header />
+      <Hero />
+      <Features />
+      <TechnologyShowcase />
+      <HowItWorks />
+      <Footer />
+    </div>
+  );
   }
 
   // Show loading while redirecting
