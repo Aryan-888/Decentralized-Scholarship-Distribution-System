@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
@@ -46,6 +46,7 @@ const adminNavItems = [
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
   const { isConnected, publicKey, connect, disconnect, isLoading } = useWallet();
   const [backgroundElements, setBackgroundElements] = useState([]);
@@ -169,7 +170,7 @@ export default function AdminLayout({ children }) {
             </div>
 
             <Button
-              onClick={logout}
+              onClick={() => logout(router)}
               variant="outline"
               size="sm"
               className="bg-white/80 hover:bg-white border-white/30 text-gray-700 hover:text-gray-900 shadow-sm"

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { 
   LayoutDashboard, 
@@ -41,6 +41,7 @@ const studentNavItems = [
 
 export default function StudentLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
   const [backgroundElements, setBackgroundElements] = useState([]);
 
@@ -135,7 +136,7 @@ export default function StudentLayout({ children }) {
               </div>
             </div>
             <Button
-              onClick={logout}
+              onClick={() => logout(router)}
               variant="outline"
               size="sm"
               className="border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-600 hover:border-red-300"

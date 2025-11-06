@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useReducer, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { apiClient } from '@/lib/api';
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
@@ -109,12 +110,19 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = async () => {
+  const logout = async (router = null) => {
     try {
       await signOut(auth);
       localStorage.removeItem('authToken');
       localStorage.removeItem('walletInfo');
       toast.success('Logged out successfully');
+      
+      // Redirect to home page after logout
+      if (router) {
+        router.push('/');
+      } else if (typeof window !== 'undefined') {
+        window.location.href = '/';
+      }
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('Logout failed');
