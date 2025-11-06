@@ -248,6 +248,71 @@ FIREBASE_TOKEN_URI=https://oauth2.googleapis.com/token
 4. Generate a service account key
 5. Download the JSON key and place it as `firebase-credentials.json` in the backend directory
 
+### Admin User Setup
+
+**Important**: The project does not have an automated admin registration system. Admin users must be created manually.
+
+#### Creating Your First Admin User
+
+**Method 1: Using Firebase Console (Recommended)**
+
+1. Register a regular user account through the application login page
+2. Go to [Firebase Console](https://console.firebase.google.com/)
+3. Select your project
+4. Navigate to **Firestore Database**
+5. Find the `users` collection
+6. Locate your user document by UID (visible after login)
+7. Click on the document and edit it
+8. Change the `role` field from `"student"` to `"admin"`
+9. Save the changes
+10. Log out and log back in to access the admin panel
+
+**Method 2: Using Python Script**
+
+Create a file `create_admin.py` in the backend directory:
+
+```python
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+# Initialize Firebase
+cred = credentials.Certificate('firebase-credentials.json')
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+# Set user as admin (replace with your user's UID)
+user_uid = 'YOUR_USER_UID_HERE'  # Get this from Firebase Console after user registers
+
+db.collection('users').document(user_uid).update({
+    'role': 'admin'
+})
+
+print(f"✅ User {user_uid} is now an admin!")
+```
+
+Run the script:
+```bash
+cd backend
+python create_admin.py
+```
+
+#### User Roles in the System
+
+- **`student`** (default): Can apply for scholarships, view application status, and manage their profile
+- **`admin`**: Can review applications, approve/reject scholarships, view statistics, and access the admin dashboard
+
+#### How Authentication Works
+
+1. Users log in via Firebase Authentication (Google/Email)
+2. On first login, a user profile is automatically created with `role: 'student'`
+3. The backend validates user role using the `@admin_required` decorator for admin endpoints
+4. Frontend checks `user.role === 'admin'` to show/hide admin navigation
+
+#### Security Note
+
+⚠️ **Never hardcode admin credentials in your application**. Always assign admin roles through the Firebase Console or a secure backend script with proper authentication.
+
 ## 🧪 Development Workflow
 
 ### Running the Development Environment

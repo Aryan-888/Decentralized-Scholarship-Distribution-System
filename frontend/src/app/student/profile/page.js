@@ -131,109 +131,142 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-gray-600">Manage your personal information and preferences</p>
+    <div className="space-y-8">
+      {/* Header Section */}
+      <div className="text-center py-8 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="inline-block px-4 py-2 bg-purple-600 text-white rounded-full text-sm font-medium shadow-lg mb-6">
+            👤 Profile Settings
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            My Profile
+          </h1>
+
+          <p className="text-xl text-gray-700 max-w-2xl mx-auto mb-8">
+            Manage your personal information, wallet connections, and academic details.
+          </p>
+
+          {!editing && (
+            <Button onClick={() => setEditing(true)} className="bg-purple-600 hover:bg-purple-700 shadow-lg hover:shadow-xl px-8 py-3 flex items-center gap-2">
+              <Edit3 className="h-5 w-5" />
+              Edit Profile
+            </Button>
+          )}
         </div>
-        {!editing && (
-          <Button onClick={() => setEditing(true)} className="flex items-center gap-2">
-            <Edit3 className="h-4 w-4" />
-            Edit Profile
-          </Button>
-        )}
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
             {/* Account Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Account Information
-                </CardTitle>
-                <CardDescription>Your basic account details</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="group relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-transparent hover:-translate-y-2">
+              <div className="absolute inset-0 bg-linear-to-br from-blue-500 to-blue-600 opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity" />
+
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="inline-flex p-3 rounded-xl bg-linear-to-br from-blue-500 to-blue-600 shadow-lg">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-500">Email Address</Label>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Mail className="h-4 w-4 text-gray-400" />
-                      <span className="text-gray-900">{user.email}</span>
-                      <Badge variant="success" className="text-xs">
+                    <h3 className="text-2xl font-bold text-gray-900">Account Information</h3>
+                    <p className="text-gray-600">Your basic account details</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-4 bg-blue-50 rounded-xl">
+                    <Label className="text-sm font-semibold text-blue-800 mb-2 block">Email Address</Label>
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-5 w-5 text-blue-600" />
+                      <span className="text-gray-900 font-medium">{user.email}</span>
+                      <Badge className="bg-green-100 text-green-800 border-green-200">
                         <CheckCircle className="h-3 w-3 mr-1" />
                         Verified
                       </Badge>
                     </div>
                   </div>
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">Account Role</Label>
-                    <div className="flex items-center gap-2 mt-1">
-                      <User className="h-4 w-4 text-gray-400" />
-                      <span className="text-gray-900 capitalize">{user.role}</span>
+                  <div className="p-4 bg-blue-50 rounded-xl">
+                    <Label className="text-sm font-semibold text-blue-800 mb-2 block">Account Role</Label>
+                    <div className="flex items-center gap-2">
+                      <User className="h-5 w-5 text-blue-600" />
+                      <span className="text-gray-900 font-medium capitalize">{user.role}</span>
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Wallet Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Wallet className="h-5 w-5" />
-                  Stellar Wallet
-                </CardTitle>
-                <CardDescription>Connect your Stellar wallet to receive scholarship payments</CardDescription>
-              </CardHeader>
-              <CardContent>
+            <div className="group relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-transparent hover:-translate-y-2">
+              <div className="absolute inset-0 bg-linear-to-br from-green-500 to-green-600 opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity" />
+
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="inline-flex p-3 rounded-xl bg-linear-to-br from-green-500 to-green-600 shadow-lg">
+                    <Wallet className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Stellar Wallet</h3>
+                    <p className="text-gray-600">Connect your Stellar wallet to receive scholarship payments</p>
+                  </div>
+                </div>
+
                 {isConnected && walletInfo ? (
-                  <div className="space-y-2">
+                  <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                      <Badge variant="success" className="text-xs">
+                      <Badge className="bg-green-100 text-green-800 border-green-200">
                         <CheckCircle className="h-3 w-3 mr-1" />
                         Connected
                       </Badge>
                     </div>
-                    <div>
-                      <Label className="text-sm font-medium text-gray-500">Wallet Address</Label>
-                      <p className="text-gray-900 font-mono text-sm break-all mt-1">
+                    <div className="p-4 bg-green-50 rounded-xl">
+                      <Label className="text-sm font-semibold text-green-800 mb-2 block">Wallet Address</Label>
+                      <p className="text-gray-900 font-mono text-sm break-all">
                         {walletInfo.publicKey}
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <Alert variant="warning">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Wallet Not Connected</AlertTitle>
-                      <AlertDescription>
-                        You need to connect a Stellar wallet to receive scholarship payments. Install Freighter wallet and connect it.
-                      </AlertDescription>
-                    </Alert>
-                    <Button onClick={connect} variant="outline">
+                  <div className="space-y-6">
+                    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-yellow-800 mb-1">Wallet Not Connected</h4>
+                          <p className="text-yellow-700 text-sm">
+                            You need to connect a Stellar wallet to receive scholarship payments. Install Freighter wallet and connect it.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <Button onClick={connect} className="w-full bg-green-600 hover:bg-green-700 shadow-lg hover:shadow-xl">
                       Connect Wallet
                     </Button>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Personal Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Personal Information</CardTitle>
-                <CardDescription>Your personal details and academic information</CardDescription>
-              </CardHeader>
-              <CardContent>
+            <div className="group relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-transparent hover:-translate-y-2">
+              <div className="absolute inset-0 bg-linear-to-br from-purple-500 to-purple-600 opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity" />
+
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="inline-flex p-3 rounded-xl bg-linear-to-br from-purple-500 to-purple-600 shadow-lg">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Personal Information</h3>
+                    <p className="text-gray-600">Your personal details and academic information</p>
+                  </div>
+                </div>
+
                 {loadingProfile ? (
-                  <div className="flex justify-center py-8">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                  <div className="flex justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="display_name">Display Name</Label>
@@ -383,8 +416,8 @@ export default function ProfilePage() {
                     )}
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
         </div>
     </div>
   );

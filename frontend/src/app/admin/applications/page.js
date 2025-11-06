@@ -3,22 +3,21 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { apiClient } from '@/lib/api';
-import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useRouter } from 'next/navigation';
-import { 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Search, 
-  Filter, 
-  Eye, 
-  User, 
-  DollarSign, 
+import {
+  CheckCircle,
+  XCircle,
+  Clock,
+  Search,
+  Filter,
+  Eye,
+  User,
+  DollarSign,
   Calendar,
   ArrowLeft,
   FileText,
@@ -205,7 +204,6 @@ export default function AdminApplicationsPage() {
 
   return (
     <div>
-      <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}

@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { apiClient } from '@/lib/api';
+import toast from 'react-hot-toast';
 import { 
   TrendingUp, 
   Users, 
@@ -41,12 +42,126 @@ export default function AdminStatistics() {
   const fetchStatistics = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.getStatistics(timeframe);
-      setStatistics(response.data || generateMockStatistics());
+      
+      // Try to fetch from admin dashboard endpoint
+      const dashboardResponse = await apiClient.getAdminDashboard();
+      const appsResponse = await apiClient.getAllApplications();
+      
+      if (dashboardResponse.data && !dashboardResponse.error) {
+        // Calculate statistics from real data
+        const apps = Array.isArray(appsResponse.data) ? appsResponse.data : [];
+        const stats = dashboardResponse.data.statistics || {};
+        
+        // Calculate additional statistics from applications
+        const departmentCount = {};
+        const gpaRanges = { '9.0-10.0': 0, '8.0-8.9': 0, '7.0-7.9': 0, '6.0-6.9': 0 };
+        const monthlyData = {};
+        
+        if (apps.length > 0) {
+          apps.forEach(app => {
+            // Department distribution
+            const dept = app.course || app.field_of_study || 'Other';
+            departmentCount[dept] = (departmentCount[dept] || 0) + 1;
+            
+            // GPA distribution
+            const gpa = parseFloat(app.gpa || 0);
+            if (gpa >= 9.0) gpaRanges['9.0-10.0']++;
+            else if (gpa >= 8.0) gpaRanges['8.0-8.9']++;
+            else if (gpa >= 7.0) gpaRanges['7.0-7.9']++;
+            else if (gpa >= 6.0) gpaRanges['6.0-6.9']++;
+            
+            // Monthly applications
+            if (app.applied_at || app.created_at) {
+              const date = new Date(app.applied_at || app.created_at);
+              const monthKey = date.toLocaleString('default', { month: 'short' });
+              if (!monthlyData[monthKey]) {
+                monthlyData[monthKey] = { month: monthKey, applications: 0, approved: 0 };
+              }
+              monthlyData[monthKey].applications++;
+              if (app.status === 'approved') monthlyData[monthKey].approved++;
+            }
+          });
+        }
+        
+        // Convert to arrays
+        const departmentDistribution = Object.entries(departmentCount)
+          .map(([department, count]) => ({
+            department,
+            count,
+            percentage: apps.length > 0 ? ((count / apps.length) * 100).toFixed(1) : 0
+          }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5);
+        
+        const gpaDistribution = Object.entries(gpaRanges)
+          .map(([range, count]) => ({
+            range,
+            count,
+            percentage: apps.length > 0 ? ((count / apps.length) * 100).toFixed(1) : 0
+          }));
+        
+        const monthlyApplications = Object.values(monthlyData).slice(-6);
+        
+        setStatistics({
+          overview: {
+            totalApplications: stats.total_applications || apps.length,
+            pendingApplications: stats.pending_applications || apps.filter(a => a.status === 'pending').length,
+            approvedApplications: stats.approved_applications || apps.filter(a => a.status === 'approved').length,
+            rejectedApplications: stats.rejected_applications || apps.filter(a => a.status === 'rejected').length,
+            totalFundsDistributed: stats.total_disbursed || 0,
+            averageScholarshipAmount: stats.total_disbursed && stats.approved_applications 
+              ? Math.round(stats.total_disbursed / stats.approved_applications) 
+              : 0,
+            totalStudents: stats.total_students_helped || stats.approved_applications || 0,
+            applicationSuccessRate: stats.total_applications 
+              ? ((stats.approved_applications / stats.total_applications) * 100).toFixed(1)
+              : 0
+          },
+          trends: {
+            monthlyApplications,
+            departmentDistribution,
+            gpaDistribution
+          },
+          recentActivity: apps.slice(0, 5).map(app => ({
+            type: app.status,
+            student: app.student_name || app.full_name || 'Unknown',
+            amount: app.scholarship_amount_requested || 0,
+            date: app.applied_at || app.created_at || new Date().toISOString()
+          }))
+        });
+        
+        toast.success('Statistics loaded successfully with real data', {
+          duration: 3000,
+          icon: '📊',
+        });
+      } else {
+        // Fallback to mock data if API fails
+        console.warn('Using mock data:', dashboardResponse.error);
+        setStatistics(generateMockStatistics());
+        
+        toast('Using demo data for statistics', {
+          duration: 4000,
+          icon: '⚙️',
+          style: {
+            background: '#EBF8FF',
+            color: '#2563EB',
+            border: '1px solid #3B82F6'
+          }
+        });
+      }
     } catch (error) {
       console.error('Error fetching statistics:', error);
-      // Use mock data for development
       setStatistics(generateMockStatistics());
+      
+      toast('Using demo data for statistics', {
+        duration: 4000,
+        icon: '⚙️',
+        style: {
+          background: '#EBF8FF',
+          color: '#2563EB',
+          border: '1px solid #3B82F6'
+        }
+      });
     } finally {
       setLoading(false);
     }
@@ -360,19 +475,21 @@ export default function AdminStatistics() {
                   <TableCell>
                     <Badge 
                       className={
-                        activity.type === 'approval' ? 'bg-green-100 text-green-800' :
-                        activity.type === 'rejection' ? 'bg-red-100 text-red-800' :
+                        activity.type === 'approved' || activity.type === 'approval' ? 'bg-green-100 text-green-800' :
+                        activity.type === 'rejected' || activity.type === 'rejection' ? 'bg-red-100 text-red-800' :
+                        activity.type === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-blue-100 text-blue-800'
                       }
                     >
-                      {activity.type === 'approval' && <CheckCircle className="h-3 w-3 mr-1" />}
-                      {activity.type === 'rejection' && <XCircle className="h-3 w-3 mr-1" />}
+                      {(activity.type === 'approved' || activity.type === 'approval') && <CheckCircle className="h-3 w-3 mr-1" />}
+                      {(activity.type === 'rejected' || activity.type === 'rejection') && <XCircle className="h-3 w-3 mr-1" />}
+                      {activity.type === 'pending' && <Clock className="h-3 w-3 mr-1" />}
                       {activity.type === 'application' && <Users className="h-3 w-3 mr-1" />}
                       {activity.type.charAt(0).toUpperCase() + activity.type.slice(1)}
                     </Badge>
                   </TableCell>
                   <TableCell className="font-medium">{activity.student}</TableCell>
-                  <TableCell>${activity.amount.toLocaleString()}</TableCell>
+                  <TableCell>${(activity.amount || 0).toLocaleString()}</TableCell>
                   <TableCell>{new Date(activity.date).toLocaleDateString()}</TableCell>
                 </TableRow>
               ))}
